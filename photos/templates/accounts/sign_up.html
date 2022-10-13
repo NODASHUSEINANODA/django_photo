@@ -1,0 +1,25 @@
+{% extends "layouts/default.html" %}
+ 
+{% block title %}{{ title }}{% endblock %}
+ 
+{% block content %}
+    {% include 'includes/not_logged_in_header.html' %}
+    <h1>{{ title }}</h1>
+    <form action="" method="POST">
+        <!-- 各入力欄に紐付かないエラー -->
+        {{ form.non_field_errors }}
+ 
+        <!-- 入力欄の数だけ繰り返し -->
+        {% for field in form %}
+        <p>
+            <label for="{{ field.id_for_label }}">{{ field.label_tag }}</label>
+            <!-- 入力欄 -->
+            {{ field }}
+            <!-- 各入力欄に紐付くエラー -->
+            {{ field.errors }}
+        </p>
+        {% endfor %}
+        {% csrf_token %}
+        <button type="submit">送信</button>
+    </form>
+{% endblock %}

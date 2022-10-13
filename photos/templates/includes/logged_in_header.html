@@ -1,0 +1,24 @@
+<header>
+    <ul class="header_nav">
+        <li>
+            <a href="{% url 'photos:index' %}">
+                トップ
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'accounts:detail' user.id %}">
+                自分のプロフィール
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'photos:create' %}">
+                新規投稿
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'accounts:logout' %}">
+                ログアウト
+            </a>
+        </li>
+    </ul>
+</header>

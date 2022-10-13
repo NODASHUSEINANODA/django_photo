@@ -1,0 +1,68 @@
+{% extends "layouts/default.html" %}
+ 
+{% block title %}{{ title }}{% endblock %}
+ 
+{% block additional_css %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'stylesheets/photo_index.css' %}">
+{% endblock %}
+ 
+{% block content %}
+    {% include 'includes/logged_in_header.html' %}
+    <h1>{{ title }}</h1>
+    <a href="{% url 'photos:create' %}">新規投稿</a>
+    <ul>
+        {% for photo in photo_list %}
+            <li>
+                <a href="{% url 'photos:detail' photo.id %}">
+                    {{ photo.user.username }}: {{ photo.body }}
+                    ({{ photo.created_at }})
+                </a>
+                <!-- いいね -->
+                {% if user.id in photo.liked_user_ids %}
+                    <form method="post" class="like" action="{% url 'photos:dislike' photo.id %}">
+                        {% csrf_token %}
+                        <button type="submit">★</button>
+                    </form>
+                {% else %}
+                    <form method="post" class="like" action="{% url 'photos:like' photo.id %}">
+                        {% csrf_token %}
+                        <button type="submit">☆</button>
+                  </form>
+                {% endif %}
+ 
+                {% if photo.image %}
+                    <p><img class="photo" src="{{ photo.image.url }}"></p>
+                {% else %}
+                    <p>画像はありません</p>
+                {% endif %}    
+            </li>
+        {% empty %}
+            <li>書き込みはありません。</li>
+        {% endfor %}
+    </ul>
+    <!--ページネーション-->
+    {% include "includes/pagination.html" %}
+ 
+    <h2>おすすめユーザー</h2>
+    <ul>
+        {% for recommended_user in recommended_users %}
+        <li>
+            <a href="{% url 'accounts:detail' recommended_user.id %}">
+                {{ recommended_user.username }}
+            </a>
+            {% if recommended_user.id in user.follows_ids %}</a>
+                <form method="post" class="follow" action="{% url 'accounts:unfollow' recommended_user.id %}">
+                    {% csrf_token %}
+                    <button type="submit">アンフォロー</button>
+                </form>
+            {% else %}
+                <form method="post" class="follow" action="{% url 'accounts:follow' recommended_user.id %}">
+                    {% csrf_token %}
+                    <button type="submit">フォロー</button>
+              </form>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

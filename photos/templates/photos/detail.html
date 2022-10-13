@@ -1,0 +1,40 @@
+{% extends "layouts/default.html" %}
+ 
+{% block title %}{{ title }}{% endblock %}
+ 
+{% block content %}
+    {% include 'includes/logged_in_header.html' %}
+    <h1>{{ title }}</h1>
+    <dl>
+        <dt>本文</dt>
+        <dd>{{ photo.body }}</dd>
+        <dt>投稿者名</dt>
+        <dd>{{ photo.user.username }}</dd>
+        <dt>投稿日時</dt>
+        <dd>{{ photo.created_at }}</dd>
+        <dt>更新日時</dt>
+        <dd>{{ photo.updated_at }}</dd>
+    </dl>
+    {% if photo.image %}
+        <p><img src="{{ photo.image.url }}"></p>
+    {% else %}
+        <p>画像はありません。</p>
+    {% endif %}
+    <p><a href="{% url 'photos:update' photo.id %}">編集</a></p>
+    <p>
+        <form action="{% url 'photos:delete' photo.id %}" method="POST">
+            <button type="submit">削除</button>
+            {% csrf_token %}
+        </form>
+    </p>
+    <!--以下追記分-->
+    <h2>コメント</h2>
+    <p>
+        <a href="{% url 'photos:comment_create' photo.pk %}">コメントする</a>
+    </p>
+    <ul>
+        {% for comment in photo.comment_set.all %}
+            <li>{{ comment }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

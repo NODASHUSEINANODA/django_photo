@@ -1,0 +1,57 @@
+{% extends "layouts/default.html" %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+ 
+{% block additional_css %}
+    <link rel="stylesheet" href="{% static 'stylesheets/accounts_detail.css' %}">
+{% endblock %}
+ 
+{% block content %}
+    {% include 'includes/logged_in_header.html' %}
+    <h1>{{ title }}</h1>
+ 
+    <dl>
+        <dt>ユーザーネーム</dt>
+        <dd>{{ user.username }}</dd>
+        <dt>フォローしているユーザー</dt>
+        <dd>
+            <ul>
+                {% for follow_user in user.follows.all %}
+                    <li>
+                        <a href="{% url 'accounts:detail' follow_user.id %}">
+                            {{ follow_user.username }}
+                        </a>
+                        <form method="post" class="follow" action="{% url 'accounts:unfollow' follow_user.id %}">
+                            {% csrf_token %}
+                            <button type="submit">アンフォロー</button>
+                        </form>
+                    </li>
+                {% empty %}
+                    <li>フォローしているユーザーはいません。</li>
+                {% endfor %}
+            </ul>
+        </dd>
+        <dt>いいねした投稿</dt>
+        <dd>
+            <ul>
+                {% for photo in user.likes.all %}
+                    <li>
+                        <a href="{% url 'photos:detail' photo.id %}">
+                            {{ photo.user.username }}: {{ photo.body }}
+                            ({{ photo.created_at }})
+                        </a>
+                        {% if photo.image %}
+                            <p><img class="photo" src="{{ photo.image.url }}"></p>
+                        {% else %}
+                            <p>画像はありません</p>
+                        {% endif %}    
+                    </li>
+                {% empty %}
+                    <li>いいねしている投稿はありません。</li>
+                {% endfor %}
+            </ul>
+        </dd>
+    </dl>
+    <p><a href="{% url 'accounts:update' user.id %}">編集</a></p>
+    <!-- 以下 6章課題の内容 -->
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "layouts/default.html" %}
+ 
+{% block title %}{{ title }}{% endblock %}
+ 
+{% block content %}
+    {% include 'includes/logged_in_header.html' %}
+    <h1>{{ title }}</h1>
+    <form action="" method="POST" enctype="multipart/form-data">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <button class="button is-primary" type="submit">送信</button>
+    </form>
+{% endblock %}
